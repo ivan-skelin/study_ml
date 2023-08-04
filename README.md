@@ -24,6 +24,9 @@ Use of MATLAB DataStore
 https://github.com/arnodelorme/child_mind_arno/tree/master
 
 Use of VGG16 MATLAB
+https://github.com/dungscout96/DL-EEG
+
+See also this private repo (requires access)
 https://github.com/sccn/childmind
 
 # To do
