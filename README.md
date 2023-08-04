@@ -12,6 +12,12 @@ Use [example_tutorial_dataset.m](example_tutorial_dataset.m) for an example of d
 
 Use [example_ds003061.m](example_ds003061.m) for an example of BIDS STUDY conversion.
 
+# Reference article
+
+This is the reference article correspond to this dataset
+
+https://ieeexplore.ieee.org/document/9871708
+
 # To do
 
 - Fix issue with borders (exported size is 12 x 12 but all the borders are empty)
