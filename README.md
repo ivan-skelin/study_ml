@@ -18,6 +18,14 @@ This is the reference article correspond to this dataset
 
 https://ieeexplore.ieee.org/document/9871708
 
+# Other related repository
+
+Use of MATLAB DataStore
+https://github.com/arnodelorme/child_mind_arno/tree/master
+
+Use of VGG16
+
+
 # To do
 
 - Fix issue with borders (exported size is 12 x 12 but all the borders are empty)
