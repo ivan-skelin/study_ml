@@ -23,8 +23,8 @@ https://ieeexplore.ieee.org/document/9871708
 Use of MATLAB DataStore
 https://github.com/arnodelorme/child_mind_arno/tree/master
 
-Use of VGG16
-
+Use of VGG16 MATLAB
+https://github.com/sccn/childmind
 
 # To do
 
