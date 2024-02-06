@@ -43,14 +43,15 @@
 % ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
 % THE POSSIBILITY OF SUCH DAMAGE.
 
-function [temp, varargout] = eeg_dlmat(EEG,varargin)
+function [samples, samples_ID, stimulus_type]  = eeg_dlmat(EEG, environment, varargin)
+
+%temp = [];
 
 if nargin < 2
     help bids2mat;
 end
 
 g = finputcheck(varargin, { 'cloudpath'  'string'  {}   '';
-                            'environment' 'string' {'online','local'} 'local';
                             'outputdir'  'string'  {}   ''; ...
                             'verbose'  'string'  { 'on' 'off' }   'on' });
 if isstr(g)
@@ -68,6 +69,7 @@ end
 % get the type of epoch and any other interesting field
 epoch_type = std_maketrialinfo([], EEG);
 trial_info = struct2cell(epoch_type.datasetinfo.trialinfo')';
+
 
 num_samples = size(EEG.data,3);
 
@@ -139,15 +141,15 @@ for segment_num = 1:num_samples
         %save(filenameAbs,'data','Z_12','Z_6','-mat','-v7.3','-nocompression')
         %save(filenameAbs,'data','data','-mat','-v7.3','-nocompression')
 
-        if strcmp(g.environment,'online')==1
+        if strcmp(environment,'online')==1
             data(isnan(data))=0;
 
             samples{segment_num} = data;
-            sample_ID{segment_num} = filenameAbs;
+            samples_ID{segment_num} = filenameAbs;
             stimulus_type{segment_num} = EEG.urevent(segment_num).type;
 
 
-        elseif strcmp(g.environment,'local')==1
+        elseif strcmp(environment,'local')==1
             data = single(reshape(data,[8,8,num_timestamps]));
             data(isnan(data))=0;
             
@@ -170,7 +172,7 @@ for segment_num = 1:num_samples
 
      %this if statement might need to come after the segmentnum loop is
      %finished
-        if strcmp(g.environment,'local')==1
+        if strcmp(environment,'local')==1
         writetable(cell2table(label_info1),label_file1,'Delimiter',',','WriteMode','append','WriteRowNames',false,'WriteVariableNames',false,'QuoteStrings',true);
         if ~isempty(g.cloudpath)
            writetable(cell2table(label_info2),label_file2,'Delimiter',',','WriteMode','append','WriteRowNames',false,'WriteVariableNames',false,'QuoteStrings',true);

@@ -34,7 +34,7 @@
 % ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
 % THE POSSIBILITY OF SUCH DAMAGE.
 
-function [ALLEEG, varargout] = pop_studydl(STUDY, ALLEEG, varargin)
+function [ALLEEG, varargout] = pop_studydl(STUDY, ALLEEG, environment, varargin)
 
 if nargin < 3
     com = [ 'bidsFolderxx = uigetdir(''Pick an output folder'');' ...
@@ -83,7 +83,6 @@ else
 end
 
 g = finputcheck(options, { 'outputdir' 'string'  {}   fullfile(STUDY.filepath, '..', 'ML_EXPORT'); ...
-    'environment' 'string' {'online','local'} 'local';
     'License'   'string'  {}    'CC0';
     'comments' 'string'  {}    '';
     'events'   'string'  {}    '';
@@ -143,17 +142,17 @@ for iSet = 1:length(ALLEEG)
     
       
         
-        if strcmp(g.environment, 'online')==1
-            [temp, sample, samples_ID, stimulus_type] = eeg_dlmat_v2_online(EEG, 'outputdir', g.outputdir, 'environment', g.environment);
+        if strcmp(environment, 'online')==1
+            [samples, samples_ID, stimulus_type] = eeg_dlmat_integrated(EEG, environment, 'outputdir', g.outputdir);
 
             samples_all = [samples_all samples];
             sample_ID_all = [sample_ID_all, samples_ID];
             stimulus_type_all = [stimulus_type_all, stimulus_type];
 
-        elseif strcmp(g.environment, 'local')==1
+        elseif strcmp(environment, 'local')==1
 
            
-         eeg_dlmat_v2_online(EEG, 'outputdir', g.outputdir, 'environment', g.environment);
+         eeg_dlmat_integrated(EEG, environment,'outputdir', g.outputdir);
 
         end
 
