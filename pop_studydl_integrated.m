@@ -34,7 +34,7 @@
 % ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
 % THE POSSIBILITY OF SUCH DAMAGE.
 
-function [ALLEEG, varargout] = pop_studydl(STUDY, ALLEEG, environment, varargin)
+function [ALLEEG, samples_all, sample_ID_all, stimulus_type_all] = pop_studydl(STUDY, ALLEEG, environment, varargin)
 
 if nargin < 3
     com = [ 'bidsFolderxx = uigetdir(''Pick an output folder'');' ...
