@@ -143,7 +143,7 @@ for iSet = 1:length(ALLEEG)
       
         
         if strcmp(environment, 'online')==1
-            [samples, samples_ID, stimulus_type] = eeg_dlmat_integrated(EEG, environment, 'outputdir', g.outputdir);
+            [samples, samples_ID, stimulus_type] = eeg_dlmat_integrated(EEG, environment);
 
             samples_all = [samples_all samples];
             sample_ID_all = [sample_ID_all, samples_ID];
