@@ -95,6 +95,9 @@ for segment_num = 1:num_samples
         eeg_ch_ind = [];
         count=1;
         for i = 1:numel(EEG.chanlocs);if strcmp(EEG.chanlocs(i).type,'EEG')==1;eeg_ch_ind(count)=i;count=count+1;end;end 
+        if isempty(eeg_ch_ind)==1
+            eeg_ch_ind = 1:EEG(1).nbchan;
+        end
         data = EEG.data(eeg_ch_ind,:,segment_num);
         num_timestamps = size(data,2);
 
@@ -150,7 +153,12 @@ for segment_num = 1:num_samples
 
 
         elseif strcmp(environment,'local')==1
+            if size(data,1)==31
+                data=data(1:30,:);
+                data = single(reshape(data,[5,6,num_timestamps]));
+            else
             data = single(reshape(data,[8,8,num_timestamps]));
+            end
             data(isnan(data))=0;
             
             save(filenameAbs,'data','data','-mat')
