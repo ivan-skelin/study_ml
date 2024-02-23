@@ -127,10 +127,10 @@ for iSet = 1:length(ALLEEG)
     % check for bidsevents
     if EEG.trials == 1
         
-        %EEG = pop_resample(EEG, 128);
+        EEG = pop_resample(EEG, 128);
         if isempty(EEG.event)
             disp('Continuous data. Regular 2s epochs will be generated')
-            EEG = eeg_regepochs(EEG, 'limits', [0 2], 'recurrence', 2);
+            EEG = eeg_regepochs(EEG, 'limits', [0 0.5], 'recurrence', 0.5);
         else
             disp('Events file detected! Epochs will be generated with [0, 0.5] s time window ')
             EEG = pop_epoch(EEG, unique({EEG.event.type}), [0 0.5]);
