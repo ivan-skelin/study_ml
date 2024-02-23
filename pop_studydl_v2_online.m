@@ -34,7 +34,7 @@
 % ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
 % THE POSSIBILITY OF SUCH DAMAGE.
 
-function [ALLEEG, samples_all, sample_ID_all, stimulus_type_all] = pop_studydl(STUDY, ALLEEG, environment, varargin)
+function [samples_all, sample_ID_all, stimulus_type_all] = pop_studydl(STUDY, ALLEEG, varargin)
 
 if nargin < 3
     com = [ 'bidsFolderxx = uigetdir(''Pick an output folder'');' ...
@@ -94,22 +94,6 @@ if strcmpi(g.eraseall, 'on')
     rmdir(g.outputdir, 's');
 end
 
-freq = 0.5; %desired highpass cutoff frequency
-srate = ALLEEG(1).srate; %EEG sampling rate
-%ALLEEG = pop_eegfilt( ALLEEG, 0.5, 50, 4);
-nyq_freq = srate / 2;
-
-[B, A] = cheby1(4, 0.1, freq/nyq_freq, 'high');
-
-
-for i = 1:numel(ALLEEG)
-    for ii = 1:size(ALLEEG(i).data,1)
-       raw_lfp = ALLEEG(i).data(ii,:);
-       ALLEEG(i).data(ii,:) =  single(filtfilt(B, A, double(raw_lfp)));
-    end
-end
-
-
 samples_all = {};
 sample_ID_all = {};
 stimulus_type_all = {};
@@ -128,35 +112,24 @@ for iSet = 1:length(ALLEEG)
     if EEG.trials == 1
         
         %EEG = pop_resample(EEG, 128);
-        if isempty(EEG.event)
-            disp('Continuous data. Regular 2s epochs will be generated')
-            EEG = eeg_regepochs(EEG, 'limits', [0 2], 'recurrence', 2);
-        else
+        % if isempty(EEG.event)
+        %     disp('Continuous data. Regular 2s epochs will be generated')
+        %     EEG = eeg_regepochs(EEG, 'limits', [0 2], 'recurrence', 2);
+        % else
             disp('Events file detected! Epochs will be generated with [0, 0.5] s time window ')
             EEG = pop_epoch(EEG, unique({EEG.event.type}), [0 0.5]);
-        end
+        %end
     else
         error('Cannot process epoched datasets');
     end
 
-    
-      
-        
-        if strcmp(environment, 'online')==1
-            [samples, samples_ID, stimulus_type] = eeg_dlmat_integrated(EEG, environment);
+    [samples, samples_ID, stimulus_type] = eeg_dlmat_v2_online(EEG, 'outputdir', g.outputdir);
+   
 
-            samples_all = [samples_all samples];
-            sample_ID_all = [sample_ID_all, samples_ID];
-            stimulus_type_all = [stimulus_type_all, stimulus_type];
-
-        elseif strcmp(environment, 'local')==1
-
-           
-         eeg_dlmat_integrated(EEG, environment,'outputdir', g.outputdir);
-
-        end
-
- end
+   
+        samples_all = [samples_all samples];
+        sample_ID_all = [sample_ID_all, samples_ID];
+        stimulus_type_all = [stimulus_type_all, stimulus_type];
     %temp_all(iSet).subj_data = temp;
     
 end

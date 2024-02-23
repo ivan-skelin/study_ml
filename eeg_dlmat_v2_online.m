@@ -43,9 +43,7 @@
 % ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
 % THE POSSIBILITY OF SUCH DAMAGE.
 
-function [samples, samples_ID, stimulus_type]  = eeg_dlmat(EEG, environment, varargin)
-
-%temp = [];
+function [samples, sample_ID, stimulus_type] = eeg_dlmat(EEG,varargin)
 
 if nargin < 2
     help bids2mat;
@@ -70,7 +68,6 @@ end
 epoch_type = std_maketrialinfo([], EEG);
 trial_info = struct2cell(epoch_type.datasetinfo.trialinfo')';
 
-
 num_samples = size(EEG.data,3);
 
 if strcmpi(g.verbose, 'on')
@@ -92,18 +89,13 @@ for segment_num = 1:num_samples
     if isfile(filenameAbs)
         fprintf('Warning: File %s already exisits. Skipping...\n', filenameAbs);
     else
-        eeg_ch_ind = [];
-        count=1;
-        for i = 1:numel(EEG.chanlocs);if strcmp(EEG.chanlocs(i).type,'EEG')==1;eeg_ch_ind(count)=i;count=count+1;end;end 
-        if isempty(eeg_ch_ind)==1
-            eeg_ch_ind = 1:EEG(1).nbchan;
-        end
-        data = EEG.data(eeg_ch_ind,:,segment_num);
+
+        data = EEG.data(1:64,:,segment_num);
         num_timestamps = size(data,2);
 
         %Z_8 = single(reshape(data,[8,8,num_timestamps]));
         %Z_8(isnan(Z_8))=0;
-        
+        data(isnan(data))=0;
         % Z_12 = zeros(12,12,num_timestamps);
         % Z_6 = single(zeros(6,6,num_timestamps));
         % 
@@ -143,53 +135,27 @@ for segment_num = 1:num_samples
 
         %save(filenameAbs,'data','Z_12','Z_6','-mat','-v7.3','-nocompression')
         %save(filenameAbs,'data','data','-mat','-v7.3','-nocompression')
+        %save(filenameAbs,'data','Z_8','-mat')
+        %save(filenameAbs,'data','data','-mat')
+        sample_filepath1 = fullfile('.',filename);
+        sample_filepath2 = fullfile(g.cloudpath,filename);
+        samples{segment_num} = data;
+        sample_ID{segment_num} = filenameAbs;
+        stimulus_type{segment_num} = EEG.urevent(segment_num).type;
 
-        if strcmp(environment,'online')==1
-            data(isnan(data))=0;
-
-            samples{segment_num} = data;
-            samples_ID{segment_num} = filenameAbs;
-            stimulus_type{segment_num} = EEG.urevent(segment_num).type;
-
-
-        elseif strcmp(environment,'local')==1
-<<<<<<< HEAD
-            data = single(reshape(data,[8,8,num_timestamps]));
-=======
-            if size(data,1)==31
-                data=data(1:30,:);
-                data = single(reshape(data,[5,6,num_timestamps]));
-            else
-            data = single(reshape(data,[8,8,num_timestamps]));
-            end
->>>>>>> 417e0a9101bc6454392037e8ace06045bfa584a8
-            data(isnan(data))=0;
-            
-            save(filenameAbs,'data','data','-mat')
-            sample_filepath1 = fullfile('.',filename);
-            sample_filepath2 = fullfile(g.cloudpath,filename);
-
-               %sample_file_name, event_type, segment number, participant info, original file name
-                if ~isfield(EEG, 'BIDS') || isempty(EEG.BIDS)
-                    label_info1 = [sample_filepath1 trial_info(segment_num,:) segment_num EEG.filename];
-                    label_info2 = [sample_filepath2 trial_info(segment_num,:) segment_num EEG.filename];
-                else
-                    label_info1 = [sample_filepath1 trial_info(segment_num,:) segment_num EEG.BIDS.pInfo(2,:) EEG.filename];
-                    label_info2 = [sample_filepath2 trial_info(segment_num,:) segment_num EEG.BIDS.pInfo(2,:) EEG.filename];
-                end
-        
+        %sample_file_name, event_type, segment number, participant info, original file name
+        if ~isfield(EEG, 'BIDS') || isempty(EEG.BIDS)
+            temp(segment_num).label_info1 = [sample_filepath1 trial_info(segment_num,:) segment_num EEG.filename];
+            temp(segment_num).label_info2 = [sample_filepath2 trial_info(segment_num,:) segment_num EEG.filename];
+        else
+            temp(segment_num).label_info1 = [sample_filepath1 trial_info(segment_num,:) segment_num EEG.BIDS.pInfo(2,:) EEG.filename];
+            temp(segment_num).label_info2 = [sample_filepath2 trial_info(segment_num,:) segment_num EEG.BIDS.pInfo(2,:) EEG.filename];
         end
-      
-        
 
-     %this if statement might need to come after the segmentnum loop is
-     %finished
-        if strcmp(environment,'local')==1
-        writetable(cell2table(label_info1),label_file1,'Delimiter',',','WriteMode','append','WriteRowNames',false,'WriteVariableNames',false,'QuoteStrings',true);
-        if ~isempty(g.cloudpath)
-           writetable(cell2table(label_info2),label_file2,'Delimiter',',','WriteMode','append','WriteRowNames',false,'WriteVariableNames',false,'QuoteStrings',true);
-        end
-        end
+        % writetable(cell2table(label_info1),label_file1,'Delimiter',',','WriteMode','append','WriteRowNames',false,'WriteVariableNames',false,'QuoteStrings',true);
+        % if ~isempty(g.cloudpath)
+        %    writetable(cell2table(label_info2),label_file2,'Delimiter',',','WriteMode','append','WriteRowNames',false,'WriteVariableNames',false,'QuoteStrings',true);
+        % end
     end
 end
 if strcmpi(g.verbose, 'on')
