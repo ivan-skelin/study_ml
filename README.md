@@ -8,7 +8,9 @@ The repository contains three examples, each within a separate live script. The 
 [![Open in MATLAB Online](https://www.mathworks.com/images/responsive/global/open-in-matlab-online.svg)](https://matlab.mathworks.com/open/github/v1?repo=ivan-skelin/study_ml//tree/clean)
 # Examples
 Use example_ds003061_multiclass_integrated.mlx for EEG-based multi-class classification of auditory stimuly (1000 Hz, 500 Hz and pink noise).
+
 Use example_ds002680_binary_integrated.mlx for EEG-based binary classification of visual stimuli (animal vs. non-animal).
+
 Use example_ds004186_binary_integrated.mlx for EEG-based binary classification of eyes-open vs. eyes-closed state.
 
 # Reference article
