@@ -31,8 +31,4 @@ https://github.com/sccn/childmind
 
 # To do
 
-- Fix issue with borders (exported size is 12 x 12 but all the borders are empty)
-- example_ds003061.m: Train and test on different individuals (otherwise performance 100%)
-- Add export to 2-second dataset
-- Add export to different features
-- Test first with HBN data
+- Fix adding the EEGLAB and BIDS toolbox to the path
