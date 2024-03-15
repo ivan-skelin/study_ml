@@ -1,3 +1,5 @@
+[![Open in MATLAB Online](https://www.mathworks.com/images/responsive/global/open-in-matlab-online.svg)](https://matlab.mathworks.com/open/github/v1?repo=sccn/eeglab_deep_learning)
+
 # EEGLAB STUDY export plugin for ML applications
 
 This EEGLAB plugin formats EEG data contained in a STUDY to be processed by Machine Learning (ML) and Deep Learning (DL) solution and stored on the Amazon S3 cloud for dynamical access if necessary. 
