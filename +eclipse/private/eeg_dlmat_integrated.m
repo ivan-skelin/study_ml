@@ -83,7 +83,7 @@ for segment_num = 1:num_samples
     end
 
     % create file name
-    filename = [ eeg_dir filesep EEG.subject ];
+    filename = [ eeg_dir filesep EEG.subject EEG.task];
     if ~isempty(EEG.run) filename = [ filename '_run_' num2str(EEG.run) ]; end
     if ~isempty(EEG.session) filename = [ filename '_session_' num2str(EEG.session) ]; end
     filename = sprintf('%s_sample_%4.4d.mat', filename, segment_num);
@@ -94,7 +94,7 @@ for segment_num = 1:num_samples
     else
         eeg_ch_ind = [];
         count=1;
-        for i = 1:numel(EEG.chanlocs);if strcmp(EEG.chanlocs(i).type,'EEG')==1;eeg_ch_ind(count)=i;count=count+1;end;end 
+        %for i = 1:numel(EEG.chanlocs);if strcmp(EEG.chanlocs(i).type,'EEG')==1;eeg_ch_ind(count)=i;count=count+1;end;end 
         if isempty(eeg_ch_ind)==1
             eeg_ch_ind = 1:EEG(1).nbchan;
         end
@@ -149,15 +149,23 @@ for segment_num = 1:num_samples
 
             samples{segment_num} = data;
             samples_ID{segment_num} = filenameAbs;
+            if isempty(EEG.urevent)==0
             stimulus_type{segment_num} = EEG.urevent(segment_num).type;
+            else
+                stimulus_type{segment_num} = EEG.task;
+            end
+
 
 
         elseif strcmp(environment,'local')==1
             if size(data,1)==31
                 data=data(1:30,:);
                 data = single(reshape(data,[5,6,num_timestamps]));
-            else
-            data = single(reshape(data,[8,8,num_timestamps]));
+            elseif size(data,1)==64
+                data = single(reshape(data,[8,8,num_timestamps]));
+            elseif size(data,1)==129
+                data=data(1:120,:);
+                data = single(reshape(data,[10,12,num_timestamps]));
             end
             data(isnan(data))=0;
             
@@ -167,19 +175,18 @@ for segment_num = 1:num_samples
 
                %sample_file_name, event_type, segment number, participant info, original file name
                 if ~isfield(EEG, 'BIDS') || isempty(EEG.BIDS)
-                    label_info1 = [sample_filepath1 trial_info(segment_num,:) segment_num EEG.filename];
-                    label_info2 = [sample_filepath2 trial_info(segment_num,:) segment_num EEG.filename];
+                    label_info1 = [sample_filepath1 trial_info(segment_num,:) segment_num EEG.filename EEG.task];
+                    label_info2 = [sample_filepath2 trial_info(segment_num,:) segment_num EEG.filename EEG.task];
                 else
-                    label_info1 = [sample_filepath1 trial_info(segment_num,:) segment_num EEG.BIDS.pInfo(2,:) EEG.filename];
-                    label_info2 = [sample_filepath2 trial_info(segment_num,:) segment_num EEG.BIDS.pInfo(2,:) EEG.filename];
+                    label_info1 = [sample_filepath1 trial_info(segment_num,:) segment_num EEG.BIDS.pInfo(2,:) EEG.filename EEG.task];
+                    label_info2 = [sample_filepath2 trial_info(segment_num,:) segment_num EEG.BIDS.pInfo(2,:) EEG.filename EEG.task];
                 end
         
         end
       
         
 
-     %this if statement might need to come after the segmentnum loop is
-     %finished
+     
         if strcmp(environment,'local')==1
         writetable(cell2table(label_info1),label_file1,'Delimiter',',','WriteMode','append','WriteRowNames',false,'WriteVariableNames',false,'QuoteStrings',true);
         if ~isempty(g.cloudpath)

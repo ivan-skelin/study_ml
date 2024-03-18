@@ -1,16 +1,19 @@
+[![Open in MATLAB Online](https://www.mathworks.com/images/responsive/global/open-in-matlab-online.svg)](https://matlab.mathworks.com/open/github/v1?repo=sccn/eeglab_deep_learning)
+
 # EEGLAB STUDY export plugin for ML applications
 
 This EEGLAB plugin formats EEG data contained in a STUDY to be processed by Machine Learning (ML) and Deep Learning (DL) solution and stored on the Amazon S3 cloud for dynamical access if necessary. 
-
+The repository contains three examples, each within a separate live script. The live scripts are named based on the corresponding OpenNeuro dataset. The datasets (or their subsets) are downloaded from S3 storage, preprocessed by the EEGLAB toolbox plugin functions (pop_importbids_integrated and pop_study_dl), stored in MATLAB datastores (training, testing and validation subsets) and used to train/test/validate the VGG16 convolutional neural network model. All the examples contain the scalp EEG data with various number of channels. 
 ```diff
 - Although the code is public, this version is alpha and still in development. Use at your own risk.
 ```
-[![Open in MATLAB Online](https://www.mathworks.com/images/responsive/global/open-in-matlab-online.svg)](https://matlab.mathworks.com/open/github/v1?repo=ivan-skelin/study_ml/example_ds002680_binary_integrated.mlx)
+[![Open in MATLAB Online](https://www.mathworks.com/images/responsive/global/open-in-matlab-online.svg)](https://matlab.mathworks.com/open/github/v1?repo=ivan-skelin/study_ml//tree/clean)
 # Examples
+Use example_ds003061_multiclass_integrated.mlx for EEG-based multi-class classification of auditory stimuly (1000 Hz, 500 Hz and pink noise).
 
-Use [example_tutorial_dataset.m](example_tutorial_dataset.m) for an example of dataset conversion. This simple script creates a STUDY with a single dataset, convert it to a format suitable for deep learning and apply a simple convolutional network. This example is not supposed to provide meaningful results.
+Use example_ds002680_binary_integrated.mlx for EEG-based binary classification of visual stimuli (animal vs. non-animal).
 
-Use [example_ds003061_multiclass_v2.m](example_ds003061_multiclass_v2.m) for an example of BIDS STUDY conversion.
+Use example_ds004186_binary_integrated.mlx for EEG-based binary classification of eyes-open vs. eyes-closed state.
 
 # Reference article
 
@@ -31,8 +34,4 @@ https://github.com/sccn/childmind
 
 # To do
 
-- Fix issue with borders (exported size is 12 x 12 but all the borders are empty)
-- example_ds003061.m: Train and test on different individuals (otherwise performance 100%)
-- Add export to 2-second dataset
-- Add export to different features
-- Test first with HBN data
+- Fix adding the EEGLAB and BIDS toolbox to the path
